@@ -1,7 +1,7 @@
 import users from "@/app/models/users";
 import { connectDB } from "@/lib/mongodb";
+import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
-const bcrypt = require('bcrypt');
 
 export async function POST(req : NextRequest) {
         
