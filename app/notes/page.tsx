@@ -1,6 +1,7 @@
 "use client";
 
 import { getServerSession } from "next-auth";
+import { signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -10,26 +11,18 @@ interface Note {
   description: string;
 }
 
-export default function Notes() {
+export default function Notes(props : any) {
+  const loginUser  = props?.loginSession
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [allNotes, setAllNotes] = useState<Note[]>([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [updateNoteId, setUpdateNoteId] = useState("");
 
-  // console.log(allNotes);
-
   useEffect(() => {
     // checkSession();
     fetchAllNotes();
   }, []);
-
-  const checkSession = async () => {
-    const session = await getServerSession();
-    if (!session) {
-      redirect("/");
-    }
-  };
 
   const addNote = async () => {
     if (!title || !description) {
@@ -117,8 +110,21 @@ export default function Notes() {
     }
   };
 
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/" });
+  };
+
   return (
-    <main className="min-h-screen bg-gary-100 p-10">
+    <main className="min-h-screen bg-gray-100 p-10">
+      <div className="flex justify-between items-center pb-10">
+        <h1 className="text-3xl text-blue-900">Welcome {loginUser?.user?.name} </h1>
+        <button
+        onClick={handleLogout}
+          className="bg-amber-500 text-white rounded shadow-lg px-4 py-2 cursor-pointer hover:bg-amber-500/70 transition-all duration-300"
+        >
+          Logout
+        </button>
+      </div>
       <div className="max-w-xl mx-auto bg-white rounded p-6 shadow">
         <h1 className="text-2xl font-bold mb-4 text-blue-800">
           Notes Manager using Next (CRUD operations)
